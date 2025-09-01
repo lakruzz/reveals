@@ -57,7 +57,7 @@
     padding: 0.4rem 0.75rem;
     margin: 0 0 0.4rem 0;
     font-weight: bold;
-    font-size: 0.85rem;
+    font-size: 0.84rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-bottom: 1px solid #ddd;
@@ -220,6 +220,7 @@
   box-sizing: border-box !important;
   position: relative !important;
   width: 100% !important;
+  top: 0 !important; /* Force BMC to top position */
   
   > ul {
     display: block !important;
@@ -387,4 +388,17 @@
   padding: 0 !important;
   z-index: 10 !important;
   width: 100% !important;
+}
+
+/* Additional fixes for BMC inside vertical slides and stacks */
+.reveal .slides section.stack section.bmc,
+.reveal .slides section.past section.bmc,
+.reveal .slides section.future section.bmc,
+.reveal .slides section.present section.bmc {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin-top: 3vh !important;
+  z-index: 5 !important;
 }
