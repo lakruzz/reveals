@@ -1531,17 +1531,20 @@ class MarkdownLoader {
 		console.log('Local parameter:', this.params.local);
 		
 		// Precedence logic:
-		// 1. If local=true → Local mode (bypass GUI, work with local files)
-		// 2. Else if load=false → Force GUI mode  
+		// 1. If load=false → Show form with preloaded params (highest priority)
+		// 2. Else if local=true → Local mode (bypass GUI, work with local files)
 		// 3. Else if all required params present → Direct load mode
 		// 4. Else → GUI mode
 		
-		if (this.params.local === 'true') {
+		if (this.params.load === 'false') {
+			console.log('load=false - showing form with preloaded parameters');
+			this.showForm();
+		} else if (this.params.local === 'true') {
 			console.log('Local mode enabled - bypassing GUI');
 			await this.initializeLocalPresentation(this.params);
 		} else {
 			// Check if we should force form display
-			const shouldShowForm = this.params.load === 'false' || !this.params.owner || !this.params.repo;
+			const shouldShowForm = !this.params.owner || !this.params.repo;
 			
 			if (shouldShowForm) {
 				this.showForm();
