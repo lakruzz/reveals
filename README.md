@@ -15,7 +15,7 @@ This project builds on [reveal.js](https://revealjs.com/)
 
 The purpose it _separate what from how_ and to go `MarkDown` crazy 🤪 - and allow _all_ the nice reveal.js features to be available from simple markdown files.
 
-🔗 If you are looking at this `README.md` in GitHub, try to <br/>[load it as a reveal](https://reveals.thetechcollective.dev/markdownloader/?repo=reveals&owner=thetechcollective&file=README.md)
+🔗 If you are looking at this `README.md` in GitHub, try to <br/>[load it as a reveal](https://reveals.lakruzz.com/markdownloader/?repo=reveals&owner=lakruzz&file=README.md)
 <!-- .element style="font-size:30px" -->
 
 ---
@@ -45,11 +45,11 @@ All you have to do is to create a reveal-flavoured markdown with your slides. St
 ## Basic Usage
 
 1. Open the free, Open Source **MarkDownLoader**<br/>
-    🔗 [https://reveals.thetechcollective.dev/markdownloader](https://reveals.thetechcollective.dev/markdownloader/)<!-- .element style="font-size:30px" -->
+    🔗 [https://reveals.lakruzz.dev/markdownloader](https://reveals.lakruzz.dev/markdownloader/)<!-- .element style="font-size:30px" -->
 2. ✏️ Fill in details:
    - **`owner`** GitHub username/organization
    - **`repo `** Repository name
-   - **`file `** Markdown filename
+   - **`file `** Markdown filename (case sensitive)
 3. 🎁 There are more settings available, but they are all optional
 4. 🚀 Click **Load**
 
@@ -57,20 +57,65 @@ All you have to do is to create a reveal-flavoured markdown with your slides. St
 
 ---
 
-## URL parameters
+## URL Parameters
 
-You can also load presentations directly by specifying URL parameters:
+The MarkDownLoader supports two modes: **GitHub mode** (default) and **local mode**.
+
+---
+
+### 🌐 GitHub Mode
+
+Load presentations directly from public GitHub repositories.
+
+**Required parameters:**
 
 ```python
-owner=USERNAME  # required
-repo=REPOSITORY # required
-file=FILENAME   # optional, may including subfolders,
+owner=USERNAME  # GitHub username/organization
+repo=REPOSITORY # GitHub repository name
+file=FILENAME   # Markdown filename (including subfolders if any)
                 # defaults to 'presentation.md'
 ```
 
-### Example:
+**Example:**
+[`https://reveals.lakruzz.com/markdownloader/?owner=lakruzz&repo=reveals&file=README.md`](https://reveals.lakruzz.com/markdownloader/?owner=lakruzz&repo=reveals&file=README.md) <!-- .element style="text-align:left; font-size:25px" -->
 
-[`https://reveals.thetechcollective.dev/markdownloader/?owner=thetechcollctive&repo=reveals&file=README.md`](https://reveals.thetechcollective.dev/markdownloader/?owner=thetechcollective&repo=reveals&file=README.md) <!-- .element style="text-align:left; font-size:30px" -->
+---
+
+### 💾 Local Mode
+
+Load presentations from markdown files stored locally on the server (e.g. `/markdowns/` folder).
+
+Set `local=true` to enable local mode.
+
+**Required parameters:**
+
+```python
+local=true    # Enable local mode
+file=FILENAME # Local markdown file path (relative to site root)
+              # e.g., 'markdowns/mermaid.md'
+```
+
+**Example:**
+[`https://reveals.lakruzz.com/markdownloader/?local=true&file=markdowns/mermaid.md`](https://reveals.lakruzz.com/markdownloader/?local=true&file=markdowns/mermaid.md) <!-- .element style="text-align:left; font-size:25px" -->
+
+---
+
+### ⚙️ Optional Parameters
+
+These parameters work in **both GitHub and Local modes**:
+
+```python
+theme=THEME              # Theme name (white, black, lakruzz, etc.)
+highlightStyle=STYLE     # Code highlight style (monokai, zenburn)
+transition=TRANSITION    # Slide transition (fade, slide, zoom, convex, concave, none)
+sectionSeparator=REGEX   # Pattern for horizontal slide separator
+slideSeparator=REGEX     # Pattern for vertical slide separator
+load=false               # Show form instead of auto-loading
+```
+
+**Example with optional parameters:**
+
+[`https://reveals.lakruzz.com/markdownloader/?owner=lakruzz&repo=reveals&file=README.md&theme=black&transition=fade`](https://reveals.lakruzz.com/markdownloader/?owner=lakruzz&repo=reveals&file=README.md&theme=black&transition=fade) <!-- .element style="text-align:left; font-size:15px" -->
 
 ---
 ---
@@ -391,14 +436,14 @@ Element style examples:
 
 # A list
 
-- Item 1 <!-- class="fragment "-->
-- Item 2 <!-- .element: style="color: blue;" -->
-- Item 3 
+- Item 1
+- Item 2 <!-- .element: class="fragment"  style="color: blue;" -->
+- Item 3 <!-- .element: class="fragment" -->
 
 <!-- .element: style="color: red;" -->
 
 ---
-````
+```
 
 🤔 Will generate a list with three items, the first and third are red, the second is blue. Only the first items is shown at first, the second and third appear as you advance (click ⬇️ arrow)
 <!-- .element style="font-size:15px" -->
@@ -435,6 +480,8 @@ A new line containing only `Note:` will indicate the beginning of you speaker no
  ---
 ```
 
+🤔 Hit the 🅂 character (Speaker) to see a popup with speaker details, including the notes.
+<!-- .element style="font-size:15px" -->
 Note:
 
 This slide has speaker notes

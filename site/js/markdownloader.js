@@ -129,58 +129,79 @@ class MarkdownLoader {
 	 * Generate the configuration form HTML
 	 */
 	generateForm(params = {}) {
+		const isLocalMode = params.local === 'true';
 		return `
 			<div class="repo-form-container">
 				<h1>🎯 reveal.js Markdown Loader</h1>
-				<p>Create instant presentations from GitHub repositories</p>
+				<p>Create instant presentations from markdown files</p>
 
 				<form id="repo-form">
-					<div class="form-group">
-						<label for="owner" class="required"><code>owner</code> – GitHub Username/Organization</label>
-						<input type="text" id="owner" name="owner" placeholder="e.g., lakruzz" value="${params.owner || ''}" required>
+					<div class="form-group checkbox-group">
+						<label style="display: flex; align-items: center; gap: 4px;">
+							<code style="display: inline-block; min-width: 35px;">local</code>
+							<input type="checkbox" id="localCheckbox" name="local" value="true" ${isLocalMode ? 'checked' : ''} style="width: auto; margin: 0; padding: 0;">
+						</label>
 					</div>
 
-					<div class="form-group">
-						<label for="repo" class="required"><code>repo</code> — Repository Name</label>
-						<input type="text" id="repo" name="repo" placeholder="e.g., my-presentation" value="${params.repo || ''}" required>
-					</div>
+					<!-- GitHub Mode Section -->
+					<fieldset id="github-mode-section" class="form-section" ${isLocalMode ? 'disabled' : ''}>
+						<div class="form-group">
+							<label for="owner" class="required"><code>owner</code></label>
+							<input type="text" id="owner" name="owner" placeholder="e.g., lakruzz" value="${params.owner || ''}" required>
+						</div>
+
+						<div class="form-group">
+							<label for="repo" class="required"><code>repo</code></label>
+							<input type="text" id="repo" name="repo" placeholder="e.g., my-presentation" value="${params.repo || ''}" required>
+						</div>
+					</fieldset>
 
 					<div class="form-group">
-						<label for="file"><code>file</code> — File name including path, relative to the repository root</label>
+						<label for="file"><code>file</code></label>
 						<input type="text" id="file" name="file" placeholder="presentation.md" value="${params.file && params.file !== DEFAULT_CONFIG.file ? params.file : ''}">
-						<small style="color: #666; font-size: 12px;">A reveals flavored MarkDown file (Leave empty to use default)</small>
+						<small id="file-hint" style="color: #666; font-size: 12px;">path relative to repository root</small>
 					</div>
 
-					<div class="form-group">
-						<label for="sectionSeparator">Section Separator (Regex)</label>
-						<input type="text" id="sectionSeparator" name="sectionSeparator" placeholder="\\n\\n---\\n---\\n\\n" value="${params.sectionSeparator && params.sectionSeparator !== DEFAULT_CONFIG.sectionSeparator ? params.sectionSeparator : ''}">
-						<small style="color: #666; font-size: 12px;">Regex pattern to separate horizontal slides (leave empty to use default)</small>
-					</div>
+					<div class="form-section">
+						<h2 style="font-size: 14px; margin: 12px 0 8px 0;">⚙️ Optional</h2>
+						
+						<div class="form-group">
+							<label for="themeSelect"><code>theme</code></label>
+							<select id="themeSelect" name="theme">
+								${this.generateThemeOptions(params.theme && params.theme !== DEFAULT_CONFIG.theme ? params.theme : null)}
+							</select>
+						</div>
 
-					<div class="form-group">
-						<label for="slideSeparator">Slide Separator (Regex)</label>
-						<input type="text" id="slideSeparator" name="slideSeparator" placeholder="\\n\\n---\\n\\n" value="${params.slideSeparator && params.slideSeparator !== DEFAULT_CONFIG.slideSeparator ? params.slideSeparator : ''}">
-						<small style="color: #666; font-size: 12px;">Regex pattern to separate vertical slides (leave empty to use default)</small>
-					</div>
-                    
-                    <div class="form-group">
-						<label for="themeSelect">Theme</label>
-						<select id="themeSelect" name="theme">
-							${this.generateThemeOptions(params.theme && params.theme !== DEFAULT_CONFIG.theme ? params.theme : null)}
-						</select>
-					</div>
+						<div class="form-group">
+							<label for="highlightStyle"><code>highlightStyle</code></label>
+							<select id="highlightStyle" name="highlightStyle">
+								${this.generateHighlightOptions(params.highlightStyle && params.highlightStyle !== DEFAULT_CONFIG.highlightStyle ? params.highlightStyle : null)}
+							</select>
+						</div>
 
-					<div class="form-group">
-						<label for="highlightStyle">Code Highlight Style</label>
-						<select id="highlightStyle" name="highlightStyle">
-							${this.generateHighlightOptions(params.highlightStyle && params.highlightStyle !== DEFAULT_CONFIG.highlightStyle ? params.highlightStyle : null)}
-						</select>
+						<div class="form-group">
+							<label for="transition"><code>transition</code></label>
+							<select id="transition" name="transition">
+								<option value="">Use default</option>
+								${AVAILABLE_TRANSITIONS.map(t => `<option value="${t}" ${params.transition === t ? 'selected' : ''}>${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('')}
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label for="sectionSeparator"><code>sectionSeparator</code></label>
+							<input type="text" id="sectionSeparator" name="sectionSeparator" placeholder="\\n\\n---\\n---\\n\\n" value="${params.sectionSeparator && params.sectionSeparator !== DEFAULT_CONFIG.sectionSeparator ? params.sectionSeparator : ''}" style="font-size: 11px;">
+						</div>
+
+						<div class="form-group">
+							<label for="slideSeparator"><code>slideSeparator</code></label>
+							<input type="text" id="slideSeparator" name="slideSeparator" placeholder="\\n\\n---\\n\\n" value="${params.slideSeparator && params.slideSeparator !== DEFAULT_CONFIG.slideSeparator ? params.slideSeparator : ''}" style="font-size: 11px;">
+						</div>
 					</div>
 
 					<div class="button-group">
 						<button type="submit" class="btn btn-secondary" id="load-btn">🚀 Load</button>
 						<button type="button" class="btn btn-secondary" id="copy-url-btn">⏺️ Copy URL</button>
-						<button type="button" class="btn" id="fill-example-btn">⬆️ Load Demo</button>
+						<button type="button" class="btn" id="fill-example-btn">📋 Demo</button>
 					</div>
 				</form>
 			</div>
@@ -197,18 +218,28 @@ class MarkdownLoader {
 			file: document.getElementById('file'),
 			theme: document.getElementById('themeSelect'),
 			highlightStyle: document.getElementById('highlightStyle'),
+			transition: document.getElementById('transition'),
 			sectionSeparator: document.getElementById('sectionSeparator'),
-			slideSeparator: document.getElementById('slideSeparator')
+			slideSeparator: document.getElementById('slideSeparator'),
+			localCheckbox: document.getElementById('localCheckbox'),
+			loadCheckbox: document.getElementById('loadCheckbox')
 		};
 
-		// Fill only the required fields
+		// Fill GitHub mode example
 		if (elements.owner) elements.owner.value = 'lakruzz';
 		if (elements.repo) elements.repo.value = 'my-presentation-repo';
+		if (elements.file) elements.file.value = 'README.md';
 		
-		// Clear optional fields to use defaults
-		if (elements.file) elements.file.value = '';
-		if (elements.theme) elements.theme.selectedIndex = 0; // First option = "Use default"
-		if (elements.highlightStyle) elements.highlightStyle.selectedIndex = 0; // First option = "Use default"
+		// Uncheck local mode
+		if (elements.localCheckbox) elements.localCheckbox.checked = false;
+		
+		// Check load checkbox (auto-load)
+		if (elements.loadCheckbox) elements.loadCheckbox.checked = true;
+		
+		// Set optional fields to defaults
+		if (elements.theme) elements.theme.selectedIndex = 0;
+		if (elements.highlightStyle) elements.highlightStyle.selectedIndex = 0;
+		if (elements.transition) elements.transition.selectedIndex = 0;
 		if (elements.sectionSeparator) elements.sectionSeparator.value = '';
 		if (elements.slideSeparator) elements.slideSeparator.value = '';
 		
@@ -217,6 +248,9 @@ class MarkdownLoader {
 		
 		// Update select styling since we changed their values
 		this.updateAllSelectStyling();
+		
+		// Re-run mode checkbox setup to ensure GitHub section is enabled
+		this.setupModeCheckboxes();
 	}
 
 	/**
@@ -231,14 +265,27 @@ class MarkdownLoader {
 			return;
 		}
 		
-		const formData = new FormData(event.target);
+		const form = event.target;
+		const formData = new FormData(form);
 		const params = new URLSearchParams();
 		
+		// Handle the 'local' checkbox specially
+		const localCheckbox = document.getElementById('localCheckbox');
+		if (localCheckbox && localCheckbox.checked) {
+			// Only add local=true if checked
+			params.append('local', 'true');
+		}
+		
 		for (let [key, value] of formData.entries()) {
+			// Skip checkbox fields - already handled above
+			if (key === 'local') {
+				continue;
+			}
+			
 			const trimmedValue = value.trim();
 			
-			// Skip empty values and the 'load' parameter
-			if (!trimmedValue || key === 'load') {
+			// Skip empty values
+			if (!trimmedValue) {
 				continue;
 			}
 			
@@ -281,14 +328,27 @@ class MarkdownLoader {
 		const form = document.getElementById('repo-form');
 		if (!form) return '';
 
-		const formData = new FormData(form);
 		const params = new URLSearchParams();
 		
+		// Handle the 'local' checkbox specially
+		const localCheckbox = document.getElementById('localCheckbox');
+		if (localCheckbox && localCheckbox.checked) {
+			// Only add local=true if checked
+			params.append('local', 'true');
+		}
+
+		const formData = new FormData(form);
+		
 		for (let [key, value] of formData.entries()) {
+			// Skip checkbox fields - already handled above
+			if (key === 'local') {
+				continue;
+			}
+			
 			const trimmedValue = value.trim();
 			
-			// Skip empty values, 'load' parameter, and default values
-			if (!trimmedValue || key === 'load' || this.isDefaultValue(key, trimmedValue)) {
+			// Skip empty values and default values
+			if (!trimmedValue || this.isDefaultValue(key, trimmedValue)) {
 				continue;
 			}
 			
@@ -1147,6 +1207,9 @@ class MarkdownLoader {
 			copyBtn.addEventListener('click', () => this.copyShareableUrl());
 		}
 
+		// Setup checkbox listeners for mode switching
+		this.setupModeCheckboxes();
+
 		// Add change listeners to selects for default styling
 		this.setupSelectStyling();
 		
@@ -1155,39 +1218,99 @@ class MarkdownLoader {
 	}
 
 	/**
+	 * Setup event listeners for load and local mode checkboxes
+	 */
+	setupModeCheckboxes() {
+		const localCheckbox = document.getElementById('localCheckbox');
+		const githubSection = document.getElementById('github-mode-section');
+		const fileHint = document.getElementById('file-hint');
+		const ownerField = document.getElementById('owner');
+		const repoField = document.getElementById('repo');
+		
+		if (localCheckbox && githubSection) {
+			localCheckbox.addEventListener('change', () => {
+				const isLocalMode = localCheckbox.checked;
+				
+				// Disable/enable GitHub section
+				githubSection.disabled = isLocalMode;
+				
+				// Update required attribute based on mode
+				if (ownerField) {
+					ownerField.required = !isLocalMode;
+				}
+				if (repoField) {
+					repoField.required = !isLocalMode;
+				}
+				
+				// Update file hint text
+				if (fileHint) {
+					if (isLocalMode) {
+						fileHint.textContent = 'path relative to site root';
+					} else {
+						fileHint.textContent = 'path relative to repository root';
+					}
+				}
+				
+				// Update validation and button states
+				this.updateButtonStates();
+			});
+		}
+	}
+
+	/**
 	 * Highlight missing or invalid required fields and show helpful message
 	 */
 	highlightMissingFields() {
-		const ownerField = document.getElementById('owner');
-		const repoField = document.getElementById('repo');
+		const localCheckbox = document.getElementById('localCheckbox');
+		const isLocalMode = localCheckbox ? localCheckbox.checked : false;
 		const issues = [];
 		
-		// Check owner field
-		const ownerValue = ownerField ? ownerField.value.trim() : '';
-		if (!ownerValue) {
-			if (ownerField) {
-				this.highlightField(ownerField);
+		if (isLocalMode) {
+			// Local mode: only file is required
+			const fileField = document.getElementById('file');
+			const fileValue = fileField ? fileField.value.trim() : '';
+			
+			if (!fileValue) {
+				if (fileField) {
+					this.highlightField(fileField);
+				}
+				issues.push('File path is required in local mode');
 			}
-			issues.push('GitHub Username is required');
-		} else if (!this.isValidUsername(ownerValue)) {
-			if (ownerField) {
-				this.highlightField(ownerField);
+		} else {
+			// GitHub mode: owner and repo are required
+			const ownerField = document.getElementById('owner');
+			const repoField = document.getElementById('repo');
+			const issues_local = [];
+			
+			// Check owner field
+			const ownerValue = ownerField ? ownerField.value.trim() : '';
+			if (!ownerValue) {
+				if (ownerField) {
+					this.highlightField(ownerField);
+				}
+				issues_local.push('GitHub Username is required');
+			} else if (!this.isValidUsername(ownerValue)) {
+				if (ownerField) {
+					this.highlightField(ownerField);
+				}
+				issues_local.push('GitHub Username format is invalid (1-39 chars, alphanumeric and hyphens only)');
 			}
-			issues.push('GitHub Username format is invalid (1-39 chars, alphanumeric and hyphens only)');
-		}
-		
-		// Check repo field
-		const repoValue = repoField ? repoField.value.trim() : '';
-		if (!repoValue) {
-			if (repoField) {
-				this.highlightField(repoField);
+			
+			// Check repo field
+			const repoValue = repoField ? repoField.value.trim() : '';
+			if (!repoValue) {
+				if (repoField) {
+					this.highlightField(repoField);
+				}
+				issues_local.push('Repository name is required');
+			} else if (!this.isValidRepoName(repoValue)) {
+				if (repoField) {
+					this.highlightField(repoField);
+				}
+				issues_local.push('Repository name format is invalid (1-100 chars, alphanumeric, hyphens, underscores, and dots)');
 			}
-			issues.push('Repository name is required');
-		} else if (!this.isValidRepoName(repoValue)) {
-			if (repoField) {
-				this.highlightField(repoField);
-			}
-			issues.push('Repository name format is invalid (1-100 chars, alphanumeric, hyphens, underscores, and dots)');
+			
+			issues.push(...issues_local);
 		}
 		
 		// Show helpful message
@@ -1233,13 +1356,24 @@ class MarkdownLoader {
 	 * Check if required form fields are filled and valid
 	 */
 	areRequiredFieldsFilled() {
-		const ownerField = document.getElementById('owner');
-		const repoField = document.getElementById('repo');
+		const localCheckbox = document.getElementById('localCheckbox');
+		const isLocalMode = localCheckbox ? localCheckbox.checked : false;
 		
-		const ownerValue = ownerField ? ownerField.value.trim() : '';
-		const repoValue = repoField ? repoField.value.trim() : '';
-		
-		return this.isValidUsername(ownerValue) && this.isValidRepoName(repoValue);
+		if (isLocalMode) {
+			// Local mode: only file is required
+			const fileField = document.getElementById('file');
+			const fileValue = fileField ? fileField.value.trim() : '';
+			return fileValue.length > 0;
+		} else {
+			// GitHub mode: owner, repo are required
+			const ownerField = document.getElementById('owner');
+			const repoField = document.getElementById('repo');
+			
+			const ownerValue = ownerField ? ownerField.value.trim() : '';
+			const repoValue = repoField ? repoField.value.trim() : '';
+			
+			return this.isValidUsername(ownerValue) && this.isValidRepoName(repoValue);
+		}
 	}
 
 	/**

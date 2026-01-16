@@ -73,5 +73,5 @@ This repository uses the `gh-tt` GitHub CLI extension for a lean, quality-first 
 ## Testing
 
 - Local: `localhost:8000` or dev server
-- Live: `reveals.thetechcollective.dev`
+- Live: `reveals.lakruzz.com`
 - Version check: `/version.txt` endpoint

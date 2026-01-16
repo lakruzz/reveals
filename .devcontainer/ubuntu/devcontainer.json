@@ -46,12 +46,10 @@
 	
 	// Mount SSH keys from host to container
 	"mounts": [
-		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
 		"source=${localEnv:HOME},target=/localhome,type=bind,consistency=cached"
 	],
 
     "remoteEnv": {
-        "UV_LINK_MODE": "copy"
     },
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
