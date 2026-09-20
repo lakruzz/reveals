@@ -1,5 +1,6 @@
 # DEMO
-<!--section-->
+
+---
 
 [![reveal.js logo](https://static.slid.es/reveal/logo-v1/reveal-white-text.svg)](https://revealjs.com) <!-- .element class="demo-logo" style="height: 180px; margin: 0 auto 4rem auto; background: transparent;" -->
 
@@ -8,7 +9,8 @@
 Created by [Hakim El Hattab](http://hakim.se) and [contributors](https://github.com/hakimel/reveal.js/graphs/contributors)
 <!-- .element: style="font-size:small;" -->
 
-<!--section-->
+---
+---
 
 ## Hello There
 
@@ -18,7 +20,8 @@ But more importantly `MarkDown` is also fully supported.<br/>
 This presentation will show you examples of what it can do.
 <!-- .element: class="fragment" -->
 
-<!--slide-->
+---
+
 ## PHP
 
 ```php [1|3-5]
@@ -30,7 +33,7 @@ public function foo()
 }
 ```
 
-<!--slide-->
+---
 
 ## C
 
@@ -45,7 +48,8 @@ do {
 } while (*++p); 
 ```
 
-<!--section-->
+---
+
 ## Point of View
 
 Press **ESC** to enter the slide overview.
@@ -53,7 +57,8 @@ Press **ESC** to enter the slide overview.
 Hold down the **alt** key (Win) or **ctrl** (Mac) and click on any element to zoom towards it using [zoom.js](http://lab.hakim.se/zoom-js). Click again to zoom back out.
 
 
-<!--section-->
+---
+---
 
 <section data-auto-animate data-auto-animate-easing="cubic-bezier(0.770, 0.000, 0.175, 1.000)">
   <h2>Auto-Animate</h2>
