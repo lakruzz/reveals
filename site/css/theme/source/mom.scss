@@ -1,0 +1,19 @@
+/**
+ * Mind over Machine theme for reveal.js.
+ * Extends the Lakruzz brand theme with the MoM "brain" default slide
+ * background, shared by every Mind over Machine deck in this repo.
+ */
+@import "lakruzz";
+
+// Default slide background for MoM decks: applied to every slide that
+// doesn't set its own data-background-color (e.g. solid coin-color slides).
+// Loaded as an external stylesheet from /dist/theme/mom.css, so this
+// relative url() always resolves against that stable location -
+// independent of where the deck's markdown file itself was fetched from.
+.reveal .slide-background:not([style*="background-color"]) {
+	background-color: #f5ebe0;
+	background-image: url("/assets/mom-brain.png");
+	background-repeat: no-repeat;
+	background-size: 100px;
+	background-position: bottom 20px left 20px;
+}
